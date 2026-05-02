@@ -1,8 +1,10 @@
 import pytest
 import os
+import sys
 import numpy as np
-from utils import generate_dummy_tabular_data, generate_dummy_images
 
+sys.path.insert(0, os.path.abspath('src'))
+from utils import generate_dummy_tabular_data, generate_dummy_images
 def test_generate_tabular_data():
     df = generate_dummy_tabular_data(10)
     assert len(df) == 10
