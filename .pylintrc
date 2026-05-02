@@ -1,0 +1,20 @@
+[MASTER]
+ignore=CVS
+persistent=yes
+load-plugins=
+
+[MESSAGES CONTROL]
+disable=
+    C0114, # missing-module-docstring
+    C0115, # missing-class-docstring
+    C0116, # missing-function-docstring
+    C0103, # invalid-name
+    W0621, # redefined-outer-name
+    E1101, # no-member (often triggered by torch)
+    W0718, # broad-exception-caught
+
+[REPORTS]
+output-format=text
+
+[FORMAT]
+max-line-length=120

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flood-risk-app
+  labels:
+    app: flood-risk
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flood-risk
+  template:
+    metadata:
+      labels:
+        app: flood-risk
+    spec:
+      containers:
+      - name: flood-risk-container
+        image: yourdockerhubusername/flood-risk-app:latest
+        ports:
+        - containerPort: 8501
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flood-risk-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: flood-risk
+  ports:
+  - port: 80
+    targetPort: 8501

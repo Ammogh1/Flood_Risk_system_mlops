@@ -1,0 +1,14 @@
+streamlit
+scikit-learn
+torch
+torchvision
+qiskit
+qiskit-machine-learning
+qiskit-aer
+pandas
+numpy
+Pillow
+mlflow
+pytest
+pylint
+matplotlib
