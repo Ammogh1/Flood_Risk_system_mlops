@@ -25,8 +25,8 @@ jobs:
         
     - name: Lint with pylint
       run: |
-        pylint --disable=C,R,W app.py utils.py ml_model.py dl_model.py qml_model.py
+        bash scripts/run_pylint.sh
         
-    - name: Run tests with pytest
+    - name: Run PyUnit tests
       run: |
-        pytest tests/
+        python -m unittest discover -s tests -p "test_pyunit*.py"

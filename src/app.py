@@ -1,5 +1,7 @@
 import streamlit as st
 import os
+import mlflow
+mlflow.set_tracking_uri("file:./mlruns")
 from PIL import Image
 from ml_model import predict_ml
 from dl_model import predict_dl
@@ -85,3 +87,23 @@ if st.button("Predict Flood Risk", type="primary"):
             st.error(f"🚨 **FINAL HYBRID PREDICTION: HIGH FLOOD RISK** (Votes: {total_votes})")
         else:
             st.success(f"✅ **FINAL HYBRID PREDICTION: LOW FLOOD RISK** (Votes: {total_votes})")
+
+st.markdown("---")
+with st.expander("📊 View MLflow Tracking Data"):
+    st.markdown("Recent model training runs tracked by MLflow:")
+    try:
+        df_runs = mlflow.search_runs()
+        if not df_runs.empty:
+            # Clean up columns to show relevant info
+            cols_to_show = ['tags.mlflow.runName', 'status']
+            metric_cols = [c for c in df_runs.columns if c.startswith('metrics.')]
+            param_cols = [c for c in df_runs.columns if c.startswith('params.')]
+            
+            final_cols = cols_to_show + metric_cols + param_cols
+            final_cols = [c for c in final_cols if c in df_runs.columns]
+            
+            st.dataframe(df_runs[final_cols])
+        else:
+            st.info("No MLflow runs found yet. Run predictions to trigger model training.")
+    except Exception as e:
+        st.warning(f"Could not load MLflow tracking data: {e}")

@@ -3,6 +3,7 @@ scikit-learn
 torch
 torchvision
 qiskit
+qiskit-algorithms
 qiskit-machine-learning
 qiskit-aer
 pandas

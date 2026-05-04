@@ -54,12 +54,22 @@ project/
    ```
 
 ### 3. Kubernetes
-Apply the deployment file to your local or cloud Kubernetes cluster:
+Apply the deployment and service file to your local or cloud Kubernetes cluster:
 ```bash
 kubectl apply -f k8s-deployment.yaml
+```
+
+Check the status of your pods and services:
+```bash
 kubectl get pods
 kubectl get services
 ```
+
+To access the Streamlit application locally, you can port-forward the service:
+```bash
+kubectl port-forward service/flood-risk-service 8501:80
+```
+Then open `http://localhost:8501` in your browser.
 
 ## DevOps & MLOps Integration
 

@@ -1,0 +1,7 @@
+/data
+/models
+mlruns/
+mlflow.db
+__pycache__/
+temp/
+venv/

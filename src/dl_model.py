@@ -5,6 +5,9 @@ import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 from PIL import Image
+import mlflow
+import mlflow.pytorch
+mlflow.set_tracking_uri("file:./mlruns")
 
 MODEL_PATH = "models/dl_cnn_model.pth"
 
@@ -48,20 +51,28 @@ def train_dl_model(data_dir="data/images", epochs=5):
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
     
-    for epoch in range(epochs):
-        running_loss = 0.0
-        for images, labels in dataloader:
-            optimizer.zero_grad()
-            outputs = model(images)
-            loss = criterion(outputs, labels)
-            loss.backward()
-            optimizer.step()
-            running_loss += loss.item()
-        print(f"Epoch {epoch+1}, Loss: {running_loss/len(dataloader)}")
-        
-    os.makedirs("models", exist_ok=True)
-    torch.save(model.state_dict(), MODEL_PATH)
-    print(f"DL Model saved to {MODEL_PATH}")
+    with mlflow.start_run(run_name="SimpleCNN_DL"):
+        mlflow.log_param("epochs", epochs)
+        mlflow.log_param("learning_rate", 0.001)
+        mlflow.log_param("batch_size", 16)
+
+        for epoch in range(epochs):
+            running_loss = 0.0
+            for images, labels in dataloader:
+                optimizer.zero_grad()
+                outputs = model(images)
+                loss = criterion(outputs, labels)
+                loss.backward()
+                optimizer.step()
+                running_loss += loss.item()
+            epoch_loss = running_loss/len(dataloader)
+            print(f"Epoch {epoch+1}, Loss: {epoch_loss}")
+            mlflow.log_metric("loss", epoch_loss, step=epoch)
+            
+        os.makedirs("models", exist_ok=True)
+        torch.save(model.state_dict(), MODEL_PATH)
+        mlflow.pytorch.log_model(model, "cnn_model")
+        print(f"DL Model saved to {MODEL_PATH}")
     return model
 
 def predict_dl(image_path):

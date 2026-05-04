@@ -1,0 +1,358 @@
+
+
+
+DEVOPS & MLOPS TOOLS REPORT
+Driving Risk Prediction System
+
+
+Tools Covered
+Git  |  GitHub  |  GitHub Actions  |  Pylint  |  PyUnit
+Docker  |  DockerHub  |  Kubernetes  |  MLflow  |  DVC
+
+
+
+
+TABLE OF CONTENTS
+
+1.  Git  ......................................  3
+2.  GitHub  ......................................  5
+3.  GitHub Actions  ......................................  7
+4.  Pylint  ......................................  9
+5.  PyUnit (unittest)  ......................................  11
+6.  Docker  ......................................  13
+7.  DockerHub  ......................................  15
+8.  Kubernetes  ......................................  17
+9.  MLflow  ......................................  19
+10.  DVC (Data Version Control)  ......................................  21
+
+1. Git
+
+1.1 What is Git?
+Git is a free and open-source distributed version control system (DVCS) designed to handle projects of all sizes with speed and efficiency. It was created by Linus Torvalds in 2005 for managing the Linux kernel source code. Git allows multiple developers to work on the same project simultaneously without overwriting each other's changes by tracking every modification made to files over time.
+
+Unlike centralized version control systems, Git stores the full project history locally on every developer's machine. This means developers can work offline, commit changes, and later synchronize with a remote repository. Git uses a snapshot-based model where each commit represents the state of the entire project at a given point in time.
+
+Key characteristics of Git include its branching model, which allows for lightweight branch creation and merging, its integrity guarantees through SHA-1 hashing, and its speed due to local operations. Git is the industry-standard version control tool and forms the foundation of modern software development workflows.
+
+1.2 Steps to Use Git
+Install Git from https://git-scm.com and verify with: git --version
+Configure global identity: git config --global user.name and git config --global user.email
+Initialize a repository in your project folder: git init
+Stage files for tracking: git add . (to add all) or git add <filename>
+Commit the staged changes with a message: git commit -m "your message"
+Create and switch branches: git checkout -b <branch-name>
+Merge branches: git merge <branch-name>
+Connect to a remote repository: git remote add origin <URL>
+Push changes to remote: git push origin <branch-name>
+Pull latest changes from remote: git pull origin <branch-name>
+View commit history: git log --oneline
+
+1.3 Usage in the Driving Risk Prediction System
+Git was used as the primary version control system throughout the entire development lifecycle of the Driving Risk Prediction System. The following activities were performed:
+
+Initialized a local Git repository at the start of the project using git init to begin tracking all source files.
+Maintained a branching strategy with two primary branches: main (stable production-ready code) and dev (active development and feature integration).
+Staged and committed code changes incrementally after completing each module — data processing, ML pipeline, DL model, QML model, Streamlit UI, and DevOps configurations.
+Used meaningful commit messages to maintain a clear and traceable history of all changes made across the project lifecycle.
+Managed merge operations between the dev and main branches after successfully testing new features.
+Integrated Git with GitHub for remote backup and collaboration, pushing all local commits to the remote repository.
+
+
+
+
+2. GitHub
+
+2.1 What is GitHub?
+GitHub is a cloud-based hosting platform for version control and collaboration built on top of Git. Founded in 2008 and acquired by Microsoft in 2018, GitHub provides a web-based interface for managing Git repositories, enabling teams and individual developers to collaborate on software projects from anywhere in the world.
+
+Beyond simple repository hosting, GitHub offers a rich ecosystem of features including pull requests for code review, issues for bug tracking and task management, GitHub Actions for CI/CD automation, GitHub Pages for static site hosting, and security features like Dependabot and code scanning. It is the largest platform for open-source collaboration globally.
+
+GitHub supports both public repositories (visible to everyone) and private repositories (restricted to invited collaborators), making it suitable for both open-source projects and proprietary enterprise software development.
+
+2.2 Steps to Use GitHub
+Create an account at https://github.com
+Create a new repository by clicking New Repository, providing a name, description, and visibility settings.
+Copy the remote repository URL (HTTPS or SSH).
+Link your local Git repository to GitHub: git remote add origin <URL>
+Push local commits to GitHub: git push -u origin main
+Use branches and pull requests for collaborative code review.
+Use Issues to track bugs, enhancements, and tasks.
+Review commit history, file changes, and contributors through the GitHub web interface.
+
+2.3 Usage in the Driving Risk Prediction System
+GitHub served as the central remote repository and collaboration hub for the Driving Risk Prediction System project. Specific usages include:
+
+Created a dedicated GitHub repository named driving-risk-system to host all project source code, configuration files, and documentation.
+Pushed all local commits from the development machine to GitHub, ensuring remote backup and version history preservation.
+Maintained the dev and main branch structure on GitHub, using the platform's branch protection and visibility features.
+Used GitHub as the trigger source for the GitHub Actions CI/CD pipeline — every push to the repository automatically initiated the automated workflow.
+Stored all DevOps configuration files including Dockerfile, deployment.yaml, service.yaml, dvc.yaml, and GitHub Actions workflow YAML files within the repository.
+
+
+
+
+3. GitHub Actions
+
+3.1 What is GitHub Actions?
+GitHub Actions is a continuous integration and continuous delivery (CI/CD) platform built directly into GitHub. It enables developers to automate software workflows — such as building, testing, and deploying code — in response to events that occur in their GitHub repository. Introduced by GitHub in 2019, it has become one of the most widely adopted CI/CD tools in the industry.
+
+Workflows are defined using YAML files stored in the .github/workflows/ directory of the repository. Each workflow consists of one or more jobs, and each job contains a series of steps that are executed on GitHub-hosted or self-hosted runners. GitHub Actions supports event triggers such as push, pull_request, schedule, and workflow_dispatch.
+
+GitHub Actions integrates natively with the GitHub ecosystem, making it easy to access repository secrets, interact with pull requests, and publish packages or Docker images as part of the automated pipeline.
+
+3.2 Steps to Use GitHub Actions
+Create a directory in your repository: .github/workflows/
+Create a YAML workflow file, e.g., ci.yml, inside the workflows directory.
+Define the trigger event (e.g., on: push: branches: [main])
+Define jobs and their runner environment (e.g., runs-on: ubuntu-latest)
+Add steps: checkout code (actions/checkout), set up environment (actions/setup-python), install dependencies (pip install), run linting (pylint), run tests (python -m unittest).
+Commit and push the workflow file to GitHub.
+Navigate to the Actions tab on GitHub to monitor workflow execution in real time.
+Inspect logs for each step to debug failures or confirm successful runs.
+
+3.3 Usage in the Driving Risk Prediction System
+A complete CI pipeline was implemented using GitHub Actions to automate quality checks on every push to the repository. The pipeline performs the following steps in sequence:
+
+Trigger: The workflow is triggered automatically on every push to the main and dev branches.
+Environment Setup: The pipeline provisions an Ubuntu runner and sets up Python 3.x using the actions/setup-python action.
+Dependency Installation: All required Python packages are installed using pip install -r requirements.txt.
+Code Linting: Pylint is executed across all Python source files to enforce code quality standards and identify any style violations or potential bugs.
+Unit Testing: The unittest test suite is run to validate data processing functions, feature generation logic, and module integrations.
+Pass/Fail Reporting: The Actions dashboard on GitHub shows the live status of each workflow run — green checkmark for success and red cross for failure.
+
+
+
+
+
+4. Pylint
+
+4.1 What is Pylint?
+Pylint is a widely used static code analysis tool for Python that checks source code for programming errors, enforces a coding standard, and looks for code smells. It was first released in 2003 and follows the PEP 8 style guide for Python. Pylint analyzes code without executing it, making it a fast and reliable way to catch issues early in the development process.
+
+Pylint assigns a score to code quality on a scale of 0 to 10, allowing developers to measure and track improvements over time. It checks for a wide range of issues including undefined variables, unused imports, missing docstrings, incorrect indentation, overly complex functions, and naming convention violations. The tool is highly configurable through a .pylintrc configuration file.
+
+Pylint is an essential component of modern Python CI pipelines, ensuring that all code merged into a repository meets a defined quality threshold before deployment.
+
+4.2 Steps to Use Pylint
+Install Pylint: pip install pylint
+Run Pylint on a single file: pylint filename.py
+Run Pylint on the entire project: pylint *.py or pylint <module_directory>/
+Review the output — Pylint reports messages with codes (e.g., C for convention, W for warning, E for error, R for refactor).
+Fix reported issues in the source code to improve the score.
+Configure Pylint using a .pylintrc file to disable specific checks or adjust thresholds.
+Integrate with GitHub Actions by adding pylint <files> as a step in the CI workflow.
+
+4.3 Usage in the Driving Risk Prediction System
+Pylint was integrated as the static code analysis step in the GitHub Actions CI pipeline. Every push to the repository triggers Pylint analysis on all Python source files. Specific usages include:
+
+Pylint was configured to run on all Python modules including app.py, ml_pipeline/ scripts, and tests/ to ensure uniform code quality.
+Identified and resolved issues such as unused imports, missing function docstrings, overly long lines, and variable naming convention violations.
+The CI pipeline fails the build if Pylint reports errors (E-type messages), ensuring that only clean code is merged.
+Pylint scores were monitored across iterations to track improvements in overall code quality throughout the development process.
+
+
+
+
+5. PyUnit (unittest)
+
+5.1 What is PyUnit (unittest)?
+PyUnit, commonly referred to as unittest, is Python's built-in unit testing framework. It is part of the Python standard library and does not require any additional installation. The framework is modeled after JUnit, the popular Java testing framework, and follows the xUnit testing conventions.
+
+unittest provides a structured way to write, organize, and run automated tests for Python code. Test cases are created by subclassing unittest.TestCase and defining methods that start with the prefix test_. The framework includes built-in assertion methods such as assertEqual, assertTrue, assertRaises, and many others that validate the behavior of code units.
+
+It supports test discovery, allowing the test runner to automatically find and execute all test files matching a pattern. unittest is commonly used in CI pipelines to run automated regression tests and validate that new code changes do not break existing functionality.
+
+5.2 Steps to Use PyUnit
+Create a test file with the naming convention test_<module>.py
+Import unittest and the module to be tested.
+Create a test class inheriting from unittest.TestCase.
+Write test methods with names starting with test_.
+Use assertion methods such as self.assertEqual(), self.assertTrue(), self.assertIsNotNone() to validate outcomes.
+Run tests from the terminal: python -m unittest discover or python -m unittest test_<module>.py
+Review test output — dots indicate passing tests, F indicates failures, E indicates errors.
+Integrate with GitHub Actions using: python -m unittest discover -s tests/
+
+5.3 Usage in the Driving Risk Prediction System
+Unit tests were written using Python's unittest framework and placed in the tests/ directory of the project. These tests are automatically executed during the CI pipeline. Specific testing activities include:
+
+Validated the deterministic data simulation function — confirmed that the same input level (Low / Mid / High) always produces the same telemetry output when seeded.
+Tested feature generation logic to ensure that the correct number of features are extracted and returned in the expected format (NumPy arrays with correct shape).
+Verified data preprocessing steps — confirmed that normalization and PCA transformations applied to input data produce outputs within expected ranges.
+Checked that individual model pipeline components load saved model files correctly and return predictions in the expected binary classification format.
+All tests are executed automatically in the GitHub Actions CI pipeline at every push, ensuring continuous validation of core functionality.
+
+
+
+
+6. Docker
+
+6.1 What is Docker?
+Docker is an open-source platform that enables developers to build, ship, and run applications inside lightweight, portable containers. Containers are isolated environments that package an application along with all its dependencies, libraries, and configuration files, ensuring that the application runs consistently regardless of the underlying infrastructure.
+
+Unlike virtual machines, Docker containers share the host operating system's kernel and are therefore much lighter in terms of resource usage and startup time. Docker uses a layered file system and image-based packaging, where each image is built from a series of instructions defined in a Dockerfile. These images can be versioned and shared through container registries.
+
+Docker solves the classic problem of inconsistent environments — where an application works on a developer's local machine but fails in production — by encapsulating all runtime dependencies within the container image. It is a foundational tool in modern DevOps, cloud-native development, and microservices architectures.
+
+6.2 Steps to Use Docker
+Install Docker Desktop from https://www.docker.com and verify: docker --version
+Create a Dockerfile in the project root directory.
+Define the base image (e.g., FROM python:3.9-slim), set working directory (WORKDIR /app), copy project files (COPY . .), install dependencies (RUN pip install -r requirements.txt), and specify the startup command (CMD ["streamlit", "run", "app.py"]).
+Build the Docker image: docker build -t driving-risk-app .
+Verify the image was created: docker images
+Run the container locally: docker run -p 8501:8501 driving-risk-app
+Access the running application at http://localhost:8501
+Stop the container: docker stop <container_id>
+Push the image to a registry: docker push <dockerhub_username>/driving-risk-app
+
+6.3 Usage in the Driving Risk Prediction System
+Docker was used to containerize the complete Driving Risk Prediction System including the Streamlit application, all trained models, and all runtime dependencies. The following activities were performed:
+
+Wrote a Dockerfile that uses a slim Python base image to minimize container size while including all necessary dependencies.
+The Dockerfile installs all packages from requirements.txt, including Streamlit, Scikit-learn, PyTorch, Qiskit, NumPy, and Pandas, ensuring complete runtime environment consistency.
+Built the Docker image locally using docker build -t driving-risk-app . and verified successful image creation.
+Tested the containerized application by running it locally with docker run -p 8501:8501 driving-risk-app and confirming full functionality in the isolated environment.
+Tagged the image with the DockerHub repository name for subsequent push to the remote registry.
+
+
+
+
+
+7. DockerHub
+
+7.1 What is DockerHub?
+DockerHub is the world's largest public container registry, operated by Docker Inc. It serves as a centralized repository for storing, managing, and distributing Docker container images. Developers and organizations can push their Docker images to DockerHub to make them accessible from any machine with Docker installed, enabling consistent and reproducible deployments across different environments.
+
+DockerHub supports both public repositories (freely accessible to anyone) and private repositories (restricted access). It provides features such as automated builds (triggered from GitHub or Bitbucket), webhooks for CI/CD integration, image vulnerability scanning, and official images maintained by software vendors. DockerHub is integrated directly into the Docker CLI, making push and pull operations straightforward.
+
+In a production DevOps workflow, DockerHub acts as the central artifact store for container images — serving as the bridge between the CI build stage and the deployment stage on platforms like Kubernetes.
+
+7.2 Steps to Use DockerHub
+Create a free account at https://hub.docker.com
+Log in via the Docker CLI: docker login
+Tag your local image with the DockerHub repository path: docker tag driving-risk-app <username>/driving-risk-app:latest
+Push the image to DockerHub: docker push <username>/driving-risk-app:latest
+Verify the push by visiting your DockerHub account and confirming the repository and image tag appear.
+Pull the image on any machine: docker pull <username>/driving-risk-app:latest
+Run the pulled image: docker run -p 8501:8501 <username>/driving-risk-app
+
+7.3 Usage in the Driving Risk Prediction System
+The Docker image for the Driving Risk Prediction System was pushed to DockerHub to enable remote access, deployment, and sharing. Specific activities include:
+
+Logged in to DockerHub using the Docker CLI and authenticated with account credentials.
+Tagged the locally built image with the DockerHub repository name: deepankreddya/driving-risk-app.
+Pushed the image to DockerHub using docker push deepankreddya/driving-risk-app, making it publicly accessible.
+The DockerHub repository serves as the image source for Kubernetes deployment — the deployment.yaml references deepankreddya/driving-risk-app to pull the image during pod creation.
+Verified the uploaded image on the DockerHub web interface, confirming the image size, creation time, and available tags.
+
+
+
+
+8. Kubernetes
+
+8.1 What is Kubernetes?
+Kubernetes (K8s) is an open-source container orchestration platform originally developed by Google and donated to the Cloud Native Computing Foundation (CNCF) in 2014. It automates the deployment, scaling, and management of containerized applications. Kubernetes abstracts the underlying infrastructure and provides a unified API for managing clusters of machines running containers.
+
+Kubernetes organizes containers into logical units called Pods — the smallest deployable unit in Kubernetes. A Deployment manages the desired state of Pods, ensuring that the specified number of replicas are always running and automatically replacing failed containers. Services expose Pods to internal or external network traffic, providing stable DNS names and load balancing.
+
+Key benefits of Kubernetes include automatic bin packing, self-healing (restarting failed containers), horizontal scaling, rolling updates, and secret management. Kubernetes is the industry-standard platform for deploying production-grade containerized applications at scale.
+
+8.2 Steps to Use Kubernetes
+Install kubectl (Kubernetes command-line tool) and a local cluster tool such as Minikube or use a managed service (EKS, GKE, AKS).
+Start the local cluster: minikube start
+Create a deployment.yaml file defining the Deployment resource — specifying the container image, number of replicas, port, and resource limits.
+Create a service.yaml file defining the Service resource — specifying the type (NodePort or LoadBalancer) and port mappings.
+Apply the Deployment: kubectl apply -f deployment.yaml
+Apply the Service: kubectl apply -f service.yaml
+Verify pods are running: kubectl get pods
+Verify services are running: kubectl get services
+Access the application using the NodePort: minikube service <service-name> --url
+View pod logs: kubectl logs <pod-name>
+Scale the deployment: kubectl scale deployment <name> --replicas=<n>
+
+8.3 Usage in the Driving Risk Prediction System
+The Driving Risk Prediction System was deployed on Kubernetes using a local Minikube cluster. The deployment used the Docker image pushed to DockerHub. The following activities were performed:
+
+Created a deployment.yaml file that defines a Deployment resource with multiple replicas of the driving-risk-app container, pulling the image from deepankreddya/driving-risk-app on DockerHub.
+Created a service.yaml file that exposes the deployment using a NodePort service, mapping the container's port 8501 to an external accessible port.
+Applied both configuration files to the Kubernetes cluster using kubectl apply -f deployment.yaml and kubectl apply -f service.yaml.
+Verified successful pod creation and running status using kubectl get pods, confirming that all replicas were in the Running state.
+Confirmed service availability using kubectl get services and accessed the deployed Streamlit application via the NodePort URL.
+Demonstrated Kubernetes self-healing by observing automatic pod restart when a container was manually terminated.
+
+
+
+
+
+9. MLflow
+
+9.1 What is MLflow?
+MLflow is an open-source platform for managing the end-to-end machine learning lifecycle. Developed by Databricks and released in 2018, MLflow provides tools for tracking experiments, packaging code into reproducible runs, managing and deploying models, and organizing the ML workflow. It is platform-agnostic and works with any ML library, programming language, and deployment environment.
+
+MLflow consists of four primary components: MLflow Tracking (records experiment parameters, metrics, and artifacts), MLflow Projects (packages ML code in a reusable format), MLflow Models (manages model packaging and deployment), and MLflow Model Registry (provides centralized model lifecycle management). MLflow Tracking is the most widely used component and provides a visual dashboard for comparing experiment runs.
+
+MLflow addresses a critical challenge in ML development — the lack of reproducibility and traceability. By logging parameters, metrics, and model artifacts for every training run, MLflow enables data scientists to compare experiments, reproduce results, and audit the entire model development history.
+
+9.2 Steps to Use MLflow
+Install MLflow: pip install mlflow
+Import MLflow in your training script: import mlflow
+Start an MLflow run: with mlflow.start_run():
+Log parameters: mlflow.log_param("n_estimators", 100)
+Log metrics: mlflow.log_metric("accuracy", 0.95)
+Log the trained model: mlflow.sklearn.log_model(model, "model")
+End the run (automatic if using the with statement).
+Launch the MLflow UI: mlflow ui
+Open the dashboard at http://localhost:5000 to view all runs, compare metrics, and download artifacts.
+
+9.3 Usage in the Driving Risk Prediction System
+MLflow was integrated into the Driving Risk Prediction System using a non-intrusive wrapper script approach to track all training runs without modifying the core model training logic. Specific activities include:
+
+Implemented a dedicated MLflow logging wrapper that wraps the training execution of each model (Random Forest, RNN, QSVC) and logs the run metadata automatically.
+Tracked training run parameters including model type, training configuration, input feature dimensions, and execution timestamps.
+Logged execution status (success or failure) as metrics to maintain a clear audit trail of all training attempts.
+Stored model configurations and run descriptions as MLflow artifacts, enabling complete reproducibility of any past training run.
+Launched the MLflow UI using python -m mlflow ui and accessed the experiment tracking dashboard at http://localhost:5000 to review all recorded runs.
+Used the MLflow dashboard to compare runs across different model configurations and verify that all three model types were successfully logged.
+
+
+
+
+10. DVC (Data Version Control)
+
+10.1 What is DVC?
+DVC (Data Version Control) is an open-source version control system specifically designed for machine learning projects. It extends Git to handle large data files, datasets, and model binaries that are typically too large to store directly in a Git repository. DVC was created in 2017 by Iterative.ai to bring Git-like version control workflows to data science and ML development.
+
+DVC works alongside Git — while Git tracks code, DVC tracks data and model files by storing lightweight pointer files (with a .dvc extension) in the Git repository. The actual large files are stored in a remote storage backend such as Amazon S3, Google Cloud Storage, Azure Blob Storage, SSH, or a local directory. This design keeps the Git repository clean and fast while maintaining full data lineage.
+
+DVC also provides a pipeline definition system through dvc.yaml files, enabling reproducible ML pipelines where each stage's dependencies, outputs, and parameters are explicitly declared. Running dvc repro re-executes only the stages that have changed, similar to how build tools like Make operate.
+
+10.2 Steps to Use DVC
+Install DVC: pip install dvc
+Initialize DVC in a Git repository: dvc init
+Add large data files or directories to DVC tracking: dvc add data/
+This creates a data.dvc pointer file and a .gitignore entry. Stage these for Git: git add data.dvc .gitignore
+Commit the pointer file to Git: git commit -m "Track data with DVC"
+Configure a remote storage (optional): dvc remote add -d myremote s3://mybucket/path
+Push data to remote storage: dvc push
+Pull data from remote storage on another machine: dvc pull
+Define ML pipeline stages in dvc.yaml with cmd, deps, and outs.
+Reproduce the pipeline: dvc repro
+Check pipeline status: dvc status
+
+10.3 Usage in the Driving Risk Prediction System
+DVC was integrated into the project to manage the dataset and maintain ML pipeline reproducibility without storing large data files in the Git repository. Specific usages include:
+
+Initialized DVC in the project repository using dvc init, creating the .dvc/ configuration directory.
+Tracked the data/ directory using dvc add data/, generating the data.dvc pointer file that captures the exact state and hash of the dataset.
+Committed the data.dvc pointer file and updated .gitignore to Git, ensuring that the actual data files are not pushed to GitHub while their version metadata is preserved.
+Defined the ML pipeline stages in dvc.yaml, specifying the training scripts as commands with their input dependencies and output model files.
+Used dvc status to verify the current state of data and pipeline stages, confirming that tracked files are in sync.
+Used dvc repro to reproduce the full ML training pipeline, which executes only the stages that have changed since the last run, saving computation time.
+
+
+
+
+
+
+
+End of Report
+Driving Risk Prediction System — DevOps & MLOps Tools Documentation

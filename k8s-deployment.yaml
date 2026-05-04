@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
       - name: flood-risk-container
-        image: yourdockerhubusername/flood-risk-app:latest
+        image: flood-risk-app:latest
+        imagePullPolicy: Never
         ports:
         - containerPort: 8501
         resources:

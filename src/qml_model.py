@@ -6,6 +6,8 @@ from sklearn.preprocessing import StandardScaler
 from qiskit.circuit.library import ZZFeatureMap, RealAmplitudes
 from qiskit_machine_learning.algorithms import VQC
 from qiskit_algorithms.optimizers import COBYLA
+import mlflow
+mlflow.set_tracking_uri("file:./mlruns")
 
 _GLOBAL_QML_MODEL = None
 _GLOBAL_SCALER = None
@@ -25,7 +27,8 @@ def get_qml_model_and_scaler(data_path="data/dummy_tabular_data.csv", num_sample
     df = pd.read_csv(data_path)
     
     # Take a smaller sample for faster training
-    df_sample = df.sample(n=num_samples, random_state=42)
+    actual_samples = min(num_samples, len(df))
+    df_sample = df.sample(n=actual_samples, random_state=42)
     
     X = df_sample[['Rainfall', 'Humidity', 'Temperature', 'River_Level']].values
     y = df_sample['Flood_Risk'].values
@@ -46,14 +49,23 @@ def get_qml_model_and_scaler(data_path="data/dummy_tabular_data.csv", num_sample
         optimizer=optimizer,
     )
     
-    print("Training QML model in memory. This may take a moment...")
-    vqc.fit(X_train, y_train)
-    
-    acc = vqc.score(X_test, y_test)
-    print(f"QML Model Accuracy: {acc:.4f}")
-    
-    _GLOBAL_QML_MODEL = vqc
-    _GLOBAL_SCALER = scaler
+    with mlflow.start_run(run_name="VQC_QML"):
+        mlflow.log_param("num_samples", num_samples)
+        mlflow.log_param("optimizer", "COBYLA")
+        mlflow.log_param("maxiter", 40)
+        
+        print("Training QML model in memory. This may take a moment...")
+        vqc.fit(X_train, y_train)
+        
+        acc = vqc.score(X_test, y_test)
+        print(f"QML Model Accuracy: {acc:.4f}")
+        mlflow.log_metric("accuracy", acc)
+        
+        # Note: Qiskit VQC serialization with MLflow requires custom wrappers,
+        # so we rely on tracking params and metrics here.
+        
+        _GLOBAL_QML_MODEL = vqc
+        _GLOBAL_SCALER = scaler
     return vqc, scaler
 
 def predict_qml(features):
