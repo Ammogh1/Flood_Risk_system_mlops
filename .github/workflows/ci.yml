@@ -30,3 +30,9 @@ jobs:
     - name: Run PyUnit tests
       run: |
         python -m unittest discover -s tests -p "test_pyunit*.py"
+
+    - name: Train Models & Display Accuracies
+      run: |
+        python src/ml_model.py
+        python src/dl_model.py
+        python src/qml_model.py
